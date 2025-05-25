@@ -1,0 +1,17 @@
+pymupdf==1.26.0
+uvicorn==0.34.2
+fastapi==0.115.12
+motor==3.7.1
+langchain==0.3.25
+langchain-community==0.3.24
+langchain-core==0.3.60
+langchain-text-splitters==0.3.8
+dependency-injector==4.46.0
+starlette-context==0.4.0
+python-jose==3.4.0
+langchain-ollama==0.3.3
+pymilvus==2.5.9
+pytesseract==0.3.13
+pillow==11.2.1
+aiomysql==0.2.0
+python-multipart==0.0.20
