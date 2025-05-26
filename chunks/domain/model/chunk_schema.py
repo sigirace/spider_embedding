@@ -25,10 +25,33 @@ class ChunkSchema(ChunkDetail, LifeCycle):
         populate_by_name = True
 
 
-class ChunkErrorSchema(BaseModel):
+class ChunkParameterSchema(BaseModel):
+    chunk_size: int = Field(default=250, description="청크 크기")
+    chunk_overlap: int = Field(default=20, description="청크 중복")
+
+
+class ChunkCreateSuccessSchema(BaseModel):
+    document_id: ObjectId = Field(..., description="문서 ID")
+    chunk_list: List[ChunkSchema] = Field(..., description="청크 리스트")
+
+    class Config:
+        arbitrary_types_allowed = True
+        populate_by_name = True
+
+
+class ChunkCreateErrorSchema(BaseModel):
+    document_id: ObjectId = Field(..., description="문서 ID")
     error: str = Field(..., description="청크 생성 실패 이유")
 
+    class Config:
+        arbitrary_types_allowed = True
+        populate_by_name = True
 
-class ChunkDeleteSchema(BaseModel):
-    id: str = Field(..., description="청크 ID")
-    detail: Optional[str] = Field(default=None, description="청크 삭제 상세 정보")
+
+class ChunkBulkCreateSchema(BaseModel):
+    success_document_list: List[ChunkCreateSuccessSchema] = Field(
+        default=[], description="성공한 문서 리스트"
+    )
+    error_document_list: List[ChunkCreateErrorSchema] = Field(
+        default=[], description="실패한 문서 리스트"
+    )

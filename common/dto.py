@@ -1,5 +1,8 @@
+from datetime import UTC, datetime
 from fastapi.responses import JSONResponse
-from typing import Any
+from typing import Any, Optional
+
+from pydantic import BaseModel, Field
 
 
 class CommonResponse(JSONResponse):
@@ -15,3 +18,16 @@ class CommonResponse(JSONResponse):
             "data": data,
         }
         super().__init__(status_code=status_code, content=content)
+
+
+class LifeCycleResponse(BaseModel):
+    creator: str = Field(..., description="생성자 ID")
+    updater: Optional[str] = Field(default=None, description="수정자")
+    created_at: datetime = Field(
+        default_factory=lambda: datetime.now(UTC),
+        description="생성 일시 (UTC, timezone-aware)",
+    )
+    updated_at: Optional[datetime] = Field(
+        default=None,
+        description="수정 일시 (UTC, timezone-aware)",
+    )

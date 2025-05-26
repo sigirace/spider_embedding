@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 
 from app.interface.dto.app_mapper import AppMapper
+from chunks.application.chunk_service import ChunkService
 from common.dto import CommonResponse
 from containers import Container
 from dependency_injector.wiring import Provide, inject
@@ -147,11 +148,14 @@ async def delete_app(
     app_id: str,
     app_service: AppService = Depends(Provide[Container.app_service]),
     document_service: DocumentService = Depends(Provide[Container.document_service]),
+    chunk_service: ChunkService = Depends(Provide[Container.chunk_service]),
     user: User = Depends(get_current_user),
 ):
     try:
 
         logger.info(f"[App] {user.user_id}: {app_id} 정보 삭제 요청")
+
+        # TODO: app id 기준 chunk 삭제 처리
 
         logger.info(f"[App] {user.user_id}: {app_id} 문서 목록 삭제 수행")
 
@@ -162,6 +166,7 @@ async def delete_app(
         )
 
         if error_list:
+            # TODO: rollback 처리
             logger.error(
                 f"[App] {user.user_id}: {app_id} 삭제 실패 - 문서 삭제 중 오류 발생. 실패 항목: {[e.name for e in error_list]}"
             )

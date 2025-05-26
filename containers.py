@@ -3,6 +3,8 @@ from dependency_injector import containers, providers
 from app.application.app_service import AppService
 
 from app.infra.app_repository_impl import AppRepository
+from chunks.application.chunk_service import ChunkService
+from chunks.infra.chunk_repository_impl import ChunkRepository
 from database.mongo import get_async_mongo_client
 from document.application.document_service import DocumentService
 from document.infra.document_repository_impl import DocumentRepository
@@ -15,6 +17,7 @@ class Container(containers.DeclarativeContainer):
             "user",
             "app",
             "document",
+            "chunks",
         ],
     )
 
@@ -43,4 +46,16 @@ class Container(containers.DeclarativeContainer):
         DocumentService,
         app_service=app_service,
         document_repository=document_repository,
+    )
+
+    chunk_repository = providers.Factory(
+        ChunkRepository,
+        mongo_client,
+    )
+
+    chunk_service = providers.Factory(
+        ChunkService,
+        app_service=app_service,
+        document_service=document_service,
+        chunk_repository=chunk_repository,
     )

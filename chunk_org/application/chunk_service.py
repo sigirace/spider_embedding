@@ -1,6 +1,6 @@
 from fastapi import HTTPException
 from app.application.app_service import AppService
-from app.domain.model.app_schema import AppSchema, MetaSchema
+from app.domain.model.app_schema import AppSchema
 from chunk_org.domain.model.chunk_schema import ChunkSchema
 from chunk_org.domain.repository.chunk_repository import IChunkRepository
 from chunk_org.infra.chunk_repository_impl import ChunkRepository

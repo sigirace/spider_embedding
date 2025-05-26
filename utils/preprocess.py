@@ -44,16 +44,16 @@ def chunking(
     img_save_path: str,  # ex) app_id/meta_id
 ) -> list[Document]:
 
-    image_path = get_image_path(img_save_path)
+    image_path = get_image_path(img_save_path)  # ./static/data/app_id/document_id
 
-    # ✅ 이미지 포함 마크다운 추출
+    # 이미지 포함 마크다운 추출
     page_chunks = to_markdown(
         doc=file_path,
         page_chunks=True,
         force_text=True,
         use_glyphs=True,
         write_images=True,
-        image_path=image_path,  # ✅ 원하는 경로에 저장
+        image_path=image_path,  # 원하는 경로에 저장
         show_progress=True,
     )
 
@@ -64,7 +64,7 @@ def chunking(
         page_number = i + 1
         raw_md = chunk.get("text", "")
 
-        # ✅ 마크다운 이미지 링크 제거 및 경로 추출
+        # 마크다운 이미지 링크 제거 및 경로 추출
         cleaned_text, inline_image_links = extract_images_and_clean_text(raw_md)
         tags = extract_tags(raw_md)
 

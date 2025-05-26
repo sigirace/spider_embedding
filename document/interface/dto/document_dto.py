@@ -1,9 +1,10 @@
 from datetime import UTC, datetime
 from typing import List, Optional
 from pydantic import BaseModel, Field
+from common.dto import LifeCycleResponse
 
 
-class DocumentResponse(BaseModel):
+class DocumentResponse(LifeCycleResponse):
     id: str = Field(..., description="문서 ID, 식별자")
     app_id: str = Field(..., description="APP ID, 식별자")
     name: str = Field(..., description="문서 이름")
@@ -12,16 +13,6 @@ class DocumentResponse(BaseModel):
     file_path: str = Field(..., description="문서 경로")
     type: str = Field(..., description="문서 타입")
     extension: str = Field(..., description="문서 확장자")
-    creator: str = Field(..., description="APP을 등록한 사용자 ID 또는 이름")
-    updater: Optional[str] = Field(default=None, description="문서 수정자")
-    created_at: datetime = Field(
-        default_factory=lambda: datetime.now(UTC),
-        description="생성 일시 (UTC, timezone-aware)",
-    )
-    updated_at: Optional[datetime] = Field(
-        default=None,
-        description="수정 일시 (UTC, timezone-aware)",
-    )
 
     class Config:
         populate_by_name = True

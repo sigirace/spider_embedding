@@ -1,6 +1,7 @@
 from typing import List
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from dependency_injector.wiring import inject, Provide
+from chunks.application.chunk_service import ChunkService
 from common.log_config import get_logger
 from containers import Container
 from document.application.document_service import DocumentService
@@ -142,10 +143,19 @@ async def delete_document_list(
     app_id: str,
     req: DocumentDeleteListRequest,
     document_service: DocumentService = Depends(Provide[Container.document_service]),
+    chunk_service: ChunkService = Depends(Provide[Container.chunk_service]),
     user: User = Depends(get_current_user),
 ):
     try:
         logger.info(f"[Document] {user.user_id}: 문서 목록 삭제")
+
+        # TODO: rollback 처리
+
+        for document_id in req.document_list:
+            await chunk_service.delete_chunk_by_document_id(
+                document_id=document_id,
+                user_id=user.user_id,
+            )
 
         success_list, error_list = await document_service.delete_document_list(
             app_id=app_id,
@@ -178,10 +188,18 @@ async def delete_document_list(
 async def delete_document(
     document_id: str,
     document_service: DocumentService = Depends(Provide[Container.document_service]),
+    chunk_service: ChunkService = Depends(Provide[Container.chunk_service]),
     user: User = Depends(get_current_user),
 ):
     try:
         logger.info(f"[Document] {user.user_id}: {document_id} 문서 삭제")
+
+        # TODO: rollback 처리
+        await chunk_service.delete_chunk_by_document_id(
+            document_id=document_id,
+            user_id=user.user_id,
+        )
+
         delete_result = await document_service.delete_document(
             document_id=document_id,
             user_id=user.user_id,

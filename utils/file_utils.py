@@ -126,7 +126,7 @@ def save_extracted_image(
 
 
 def get_image_path(file_path: str) -> str:
-    save_dir = os.path.join(DATA_DIR, file_path)
+    save_dir = os.path.join(DATA_DIR, file_path)  # ./static/data , app_id/document_id
 
     # 디렉토리 재생성
     os.makedirs(save_dir, exist_ok=True)
