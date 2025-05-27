@@ -131,24 +131,18 @@ class DocumentService:
 
         return document
 
-    async def get_document_list(
+    async def get_document_by_app(
         self,
         app_id: str,
-    ) -> List[DocumentSchema]:
+    ) -> Optional[List[DocumentSchema]]:
         """
         Document 목록 조회
         """
         existing_app = await self.app_service.get_app(app_id)
 
-        document_list = await self.document_repository.get_document_list(
+        document_list = await self.document_repository.get_document_by_app(
             existing_app.id
         )
-
-        if not document_list:
-            raise HTTPException(
-                status_code=404,
-                detail="문서가 존재하지 않습니다.",
-            )
 
         return document_list
 
@@ -218,12 +212,6 @@ class DocumentService:
         oid = get_object_id(document_id)
         document = await self.get_document(document_id)
 
-        if not document:
-            raise HTTPException(
-                status_code=404,
-                detail="문서가 존재하지 않습니다.",
-            )
-
         if document.creator != user_id:
             raise HTTPException(
                 status_code=403,
@@ -233,9 +221,17 @@ class DocumentService:
         try:
             delete_file(document.file_path)
         except FileNotFoundError as e:
+            # 파일을 찾을 수 없어도 문서 삭제 처리
+            await self.document_repository.delete_document(oid)
+
             raise HTTPException(
                 status_code=404,
                 detail=f"파일을 찾을 수 없습니다: {str(e)}",
+            )
+        except Exception as e:
+            raise HTTPException(
+                status_code=500,
+                detail=f"파일 삭제 중 오류 발생: {str(e)}",
             )
 
         if await self.document_repository.delete_document(oid):
@@ -270,7 +266,7 @@ class DocumentService:
         target_documents = (
             [
                 get_str_id(doc.id)
-                for doc in await self.get_document_list(get_str_id(existing_app.id))
+                for doc in await self.get_document_by_app(get_str_id(existing_app.id))
             ]
             if not document_list
             else document_list

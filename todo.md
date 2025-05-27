@@ -24,7 +24,7 @@
     		- service에서 List를 돌며 Insert
    R
    		- get_document (document_id) : 특정 문서 조회
-   		- get_document_list (app_id) : 앱에 해당하는 모든 문서 조회
+   		- get_document_by_app (app_id) : 앱에 해당하는 모든 문서 조회
    U
    		- update_document (document_id, param): 특정 문서 수정 -> 필요할까?
    D
@@ -82,7 +82,7 @@ post: /{app_id}
 - app 단위로 청크 생성
 
 create_chunk_by_app
-	get_document_list
+	get_document_by_app
 		for document create_chunk_by_document
 
 

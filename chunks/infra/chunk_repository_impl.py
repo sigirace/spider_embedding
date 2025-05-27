@@ -1,7 +1,6 @@
 from datetime import UTC, datetime
 from typing import List
 from bson import ObjectId
-from fastapi import HTTPException
 from motor.motor_asyncio import AsyncIOMotorClient
 from chunks.domain.model.chunk_schema import ChunkSchema
 from chunks.domain.repository.chunk_repository import IChunkRepository
@@ -21,6 +20,7 @@ class ChunkRepository(IChunkRepository):
         self,
         chunk: ChunkSchema,
     ) -> ChunkSchema:
+        chunk.created_at = datetime.now(UTC)
         await self.collection.insert_one(chunk.model_dump(by_alias=True))
         return chunk
 

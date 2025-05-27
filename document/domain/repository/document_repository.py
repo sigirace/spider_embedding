@@ -31,7 +31,9 @@ class IDocumentRepository(ABC):
         pass
 
     @abstractmethod
-    async def get_document_list(self, app_id: ObjectId) -> List[DocumentSchema]:
+    async def get_document_by_app(
+        self, app_id: ObjectId
+    ) -> Optional[List[DocumentSchema]]:
         """
         App ID 기반으로 Document 목록 조회
         """

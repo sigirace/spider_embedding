@@ -12,6 +12,8 @@ from fastapi.openapi.docs import (
 from app.interface.controller.app_controller import router as app_router
 from document.interface.controller.document_controller import router as document_router
 from chunks.interface.controller.chunk_controller import router as chunk_router
+from chunks.interface.controller.image_controller import router as image_router
+from llm.interface.controller.llm_controller import router as llm_router
 
 from containers import Container
 from common.log_config import get_logger
@@ -40,6 +42,8 @@ def create_app():
     api_router.include_router(app_router, tags=["App"])
     api_router.include_router(document_router, tags=["Document"])
     api_router.include_router(chunk_router, tags=["Chunk"])
+    api_router.include_router(image_router, tags=["Image"])
+    api_router.include_router(llm_router, tags=["LLM"])
     app.include_router(api_router)
 
     app.add_middleware(
@@ -55,6 +59,8 @@ def create_app():
             "app.interface.controller.app_controller",
             "document.interface.controller.document_controller",
             "chunks.interface.controller.chunk_controller",
+            "chunks.interface.controller.image_controller",
+            "llm.interface.controller.llm_controller",
         ]
     )
     app.container = container

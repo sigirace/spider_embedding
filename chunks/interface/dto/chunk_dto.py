@@ -13,7 +13,6 @@ class ChunkResponse(LifeCycleResponse):
     document_id: str = Field(..., description="문서 ID")
     content: str = Field(..., description="청크 내용")
     tags: List[str] = Field(default=[], description="청크 태그")
-    images: List[str] = Field(default=[], description="청크 이미지 리스트")
     page: int = Field(..., description="페이지 번호")
     file_creation_date: Optional[str] = Field(description="파일 생성 일시")
     file_mod_date: Optional[str] = Field(description="파일 수정 일시")

@@ -7,7 +7,6 @@ from common.model import LifeCycle
 class ChunkUpdateSchema(BaseModel):
     content: str = Field(..., description="청크 내용")
     tags: List[str] = Field(default=[], description="청크 태그")
-    images: List[str] = Field(default=[], description="청크 이미지 리스트")
 
 
 class ChunkDetail(ChunkUpdateSchema):

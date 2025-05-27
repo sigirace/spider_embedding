@@ -34,7 +34,6 @@ class ChunkMapper:
             document_id=get_str_id(chunk.document_id),
             content=chunk.content,
             tags=chunk.tags,
-            images=chunk.images,
             page=chunk.page,
             file_creation_date=chunk.file_creation_date,
             file_mod_date=chunk.file_mod_date,

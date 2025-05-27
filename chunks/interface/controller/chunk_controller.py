@@ -40,16 +40,16 @@ async def create_chunk_by_app(
 
     except HTTPException as e:
         logger.error(
-            f"Chunk 생성 중 오류 발생: {user.user_id} -> app_id: {app_id}, error: {e}"
+            f"Chunk 생성 중 오류 발생: {user.user_id} -> app_id: {app_id}, error: {e.detail}"
         )
         raise
     except Exception as e:
         logger.error(
-            f"Chunk 생성 중 오류 발생: {user.user_id} -> app_id: {app_id}, error: {e}"
+            f"Chunk 생성 중 오류 발생: {user.user_id} -> app_id: {app_id}, error: {str(e)}"
         )
         raise HTTPException(
             status_code=500,
-            detail=f"Chunk 생성 중 오류 발생: {user.user_id} -> app_id: {app_id}, error: {e}",
+            detail=f"Chunk 생성 중 오류 발생: {user.user_id} -> app_id: {app_id}, error: {str(e)}",
         )
 
 
@@ -72,18 +72,18 @@ async def create_chunk_by_document(
 
         return [ChunkMapper.to_chunk_response(chunk) for chunk in chunk_list]
 
-    except HTTPException:
+    except HTTPException as e:
         logger.error(
-            f"Chunk 생성 중 오류 발생: {user.user_id} -> document_id: {document_id}, error: {e}"
+            f"Chunk 생성 중 오류 발생: {user.user_id} -> document_id: {document_id}, error: {e.detail}"
         )
         raise
     except Exception as e:
         logger.error(
-            f"Chunk 생성 중 오류 발생: {user.user_id} -> document_id: {document_id}, error: {e}"
+            f"Chunk 생성 중 오류 발생: {user.user_id} -> document_id: {document_id}, error: {str(e)}"
         )
         raise HTTPException(
             status_code=500,
-            detail=f"Chunk 생성 중 오류 발생: {e}",
+            detail=f"Chunk 생성 중 오류 발생: {str(e)}",
         )
 
 
@@ -102,18 +102,18 @@ async def get_chunk(
         )
         logger.info(f"Chunk 조회 완료: {user.user_id} -> chunk_id: {chunk_id}")
         return ChunkMapper.to_chunk_response(chunk)
-    except HTTPException:
+    except HTTPException as e:
         logger.error(
-            f"Chunk 조회 중 오류 발생: {user.user_id} -> chunk_id: {chunk_id}, error: {e}"
+            f"Chunk 조회 중 오류 발생: {user.user_id} -> chunk_id: {chunk_id}, error: {e.detail}"
         )
         raise
     except Exception as e:
         logger.error(
-            f"Chunk 조회 중 오류 발생: {user.user_id} -> chunk_id: {chunk_id}, error: {e}"
+            f"Chunk 조회 중 오류 발생: {user.user_id} -> chunk_id: {chunk_id}, error: {str(e)}"
         )
         raise HTTPException(
             status_code=500,
-            detail=f"Chunk 조회 중 오류 발생: {e}",
+            detail=f"Chunk 조회 중 오류 발생: {str(e)}",
         )
 
 
@@ -136,18 +136,18 @@ async def get_chunk_by_document(
             f"Document의 Chunk 조회 완료: {user.user_id} -> document_id: {document_id}"
         )
         return [ChunkMapper.to_chunk_response(chunk) for chunk in chunk_list]
-    except HTTPException:
+    except HTTPException as e:
         logger.error(
-            f"Document의 Chunk 조회 중 오류 발생: {user.user_id} -> document_id: {document_id}, error: {e}"
+            f"Document의 Chunk 조회 중 오류 발생: {user.user_id} -> document_id: {document_id}, error: {e.detail}"
         )
         raise
     except Exception as e:
         logger.error(
-            f"Document의 Chunk 조회 중 오류 발생: {user.user_id} -> document_id: {document_id}, error: {e}"
+            f"Document의 Chunk 조회 중 오류 발생: {user.user_id} -> document_id: {document_id}, error: {str(e)}"
         )
         raise HTTPException(
             status_code=500,
-            detail=f"Document의 Chunk 조회 중 오류 발생: {e}",
+            detail=f"Document의 Chunk 조회 중 오류 발생: {str(e)}",
         )
 
 
@@ -163,18 +163,18 @@ async def delete_chunk(
         await chunk_service.delete_chunk(chunk_id=chunk_id, user_id=user.user_id)
         logger.info(f"Chunk 삭제 완료: {user.user_id} -> chunk_id: {chunk_id}")
         return CommonResponse(message=f"{chunk_id} Chunk 삭제 완료")
-    except HTTPException:
+    except HTTPException as e:
         logger.error(
-            f"Chunk 삭제 중 오류 발생: {user.user_id} -> chunk_id: {chunk_id}, error: {e}"
+            f"Chunk 삭제 중 오류 발생: {user.user_id} -> chunk_id: {chunk_id}, error: {e.detail}"
         )
         raise
     except Exception as e:
         logger.error(
-            f"Chunk 삭제 중 오류 발생: {user.user_id} -> chunk_id: {chunk_id}, error: {e}"
+            f"Chunk 삭제 중 오류 발생: {user.user_id} -> chunk_id: {chunk_id}, error: {str(e)}"
         )
         raise HTTPException(
             status_code=500,
-            detail=f"Chunk 삭제 중 오류 발생: {e}",
+            detail=f"Chunk 삭제 중 오류 발생: {str(e)}",
         )
 
 
@@ -197,16 +197,16 @@ async def delete_chunk_by_document(
             f"Document의 Chunk 삭제 완료: {user.user_id} -> document_id: {document_id}"
         )
         return CommonResponse(message=f"{document_id} Document의 Chunk 삭제 완료")
-    except HTTPException:
+    except HTTPException as e:
         logger.error(
-            f"Document의 Chunk 삭제 중 오류 발생: {user.user_id} -> document_id: {document_id}, error: {e}"
+            f"Document의 Chunk 삭제 중 오류 발생: {user.user_id} -> document_id: {document_id}, error: {e.detail}"
         )
         raise
     except Exception as e:
         logger.error(
-            f"Document의 Chunk 삭제 중 오류 발생: {user.user_id} -> document_id: {document_id}, error: {e}"
+            f"Document의 Chunk 삭제 중 오류 발생: {user.user_id} -> document_id: {document_id}, error: {str(e)}"
         )
         raise HTTPException(
             status_code=500,
-            detail=f"Document의 Chunk 삭제 중 오류 발생: {e}",
+            detail=f"Document의 Chunk 삭제 중 오류 발생: {str(e)}",
         )

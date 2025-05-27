@@ -48,7 +48,7 @@ async def create_app(
         raise HTTPException(status_code=400, detail=str(e))
     except HTTPException as e:
         logger.error(
-            f"[App] {user.user_id}: {req.app_name} 정보 생성 실패, detail: {str(e)}"
+            f"[App] {user.user_id}: {req.app_name} 정보 생성 실패, detail: {e.detail}"
         )
         raise
     except Exception as e:
@@ -74,7 +74,7 @@ async def get_app_list(
 
         return [AppMapper.to_app_response(app) for app in app_list]
     except HTTPException as e:
-        logger.error(f"[App] {user.user_id}: 정보 목록 조회 실패, detail: {str(e)}")
+        logger.error(f"[App] {user.user_id}: 정보 목록 조회 실패, detail: {e.detail}")
         raise
     except Exception as e:
         logger.exception(
@@ -100,7 +100,9 @@ async def get_app(
 
         return AppMapper.to_app_response(app)
     except HTTPException as e:
-        logger.error(f"[App] {user.user_id}: {app_id} 정보 조회 실패, detail: {str(e)}")
+        logger.error(
+            f"[App] {user.user_id}: {app_id} 정보 조회 실패, detail: {e.detail}"
+        )
         raise
     except Exception as e:
         logger.exception(f"[App] {user.user_id}: {app_id} 알 수 없는 오류 - {str(e)}")
@@ -130,7 +132,9 @@ async def update_app(
 
         return AppMapper.to_app_response(app)
     except HTTPException as e:
-        logger.error(f"[App] {user.user_id}: {app_id} 정보 수정 실패, detail: {str(e)}")
+        logger.error(
+            f"[App] {user.user_id}: {app_id} 정보 수정 실패, detail: {e.detail}"
+        )
         raise
     except Exception as e:
         logger.exception(
@@ -155,11 +159,16 @@ async def delete_app(
 
         logger.info(f"[App] {user.user_id}: {app_id} 정보 삭제 요청")
 
-        # TODO: app id 기준 chunk 삭제 처리
+        logger.info(f"[App] {user.user_id}: {app_id} 청크 목록 삭제 수행")
+        await chunk_service.delete_chunk_by_app_id(
+            app_id=app_id,
+            user_id=user.user_id,
+        )
+        logger.info(f"[App] {user.user_id}: {app_id} 청크 목록 삭제 수행 완료")
 
         logger.info(f"[App] {user.user_id}: {app_id} 문서 목록 삭제 수행")
 
-        _, error_list = await document_service.delete_document_list(
+        success_list, error_list = await document_service.delete_document_list(
             app_id=app_id,
             document_list=None,
             user_id=user.user_id,
@@ -188,7 +197,7 @@ async def delete_app(
             message=f"{app_id} 삭제 완료",
         )
     except HTTPException as e:
-        logger.error(f"[App] {user.user_id}: {app_id} 삭제 실패, detail: {str(e)}")
+        logger.error(f"[App] {user.user_id}: {app_id} 삭제 실패, detail: {e.detail}")
         raise
     except Exception as e:
         logger.exception(

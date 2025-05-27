@@ -41,7 +41,7 @@ async def create_document(
         return DocumentMapper.to_document_list_response(success_list, error_list)
 
     except HTTPException as e:
-        logger.error(f"[Document] {user.user_id}: 문서 생성 실패, detail: {str(e)}")
+        logger.error(f"[Document] {user.user_id}: 문서 생성 실패, detail: {e.detail}")
         raise
     except Exception as e:
         logger.exception(
@@ -80,21 +80,21 @@ async def get_document(
 
 @router.get("/{app_id}/list")
 @inject
-async def get_document_list(
+async def get_document_by_app(
     app_id: str,
     document_service: DocumentService = Depends(Provide[Container.document_service]),
     user: User = Depends(get_current_user),
 ):
     try:
         logger.info(f"[Document] {user.user_id}: {app_id} 문서 목록 조회")
-        document_list = await document_service.get_document_list(app_id)
+        document_list = await document_service.get_document_by_app(app_id)
         logger.info(f"[Document] {user.user_id}: {app_id} 문서 목록 조회 완료")
         return [
             DocumentMapper.to_document_response(document) for document in document_list
         ]
     except HTTPException as e:
         logger.error(
-            f"[Document] {user.user_id}: 문서 목록 조회 실패, detail: {str(e)}"
+            f"[Document] {user.user_id}: 문서 목록 조회 실패, detail: {e.detail}"
         )
         raise
     except Exception as e:
@@ -125,7 +125,7 @@ async def update_document(
         logger.info(f"[Document] {user.user_id}: {document_id} 문서 수정 완료")
         return DocumentMapper.to_document_response(document)
     except HTTPException as e:
-        logger.error(f"[Document] {user.user_id}: 문서 수정 실패, detail: {str(e)}")
+        logger.error(f"[Document] {user.user_id}: 문서 수정 실패, detail: {e.detail}")
         raise
     except Exception as e:
         logger.exception(
@@ -149,8 +149,6 @@ async def delete_document_list(
     try:
         logger.info(f"[Document] {user.user_id}: 문서 목록 삭제")
 
-        # TODO: rollback 처리
-
         for document_id in req.document_list:
             await chunk_service.delete_chunk_by_document_id(
                 document_id=document_id,
@@ -170,7 +168,7 @@ async def delete_document_list(
         )
     except HTTPException as e:
         logger.error(
-            f"[Document] {user.user_id}: 문서 목록 삭제 실패, detail: {str(e)}"
+            f"[Document] {user.user_id}: 문서 목록 삭제 실패, detail: {e.detail}"
         )
         raise
     except Exception as e:
@@ -194,7 +192,6 @@ async def delete_document(
     try:
         logger.info(f"[Document] {user.user_id}: {document_id} 문서 삭제")
 
-        # TODO: rollback 처리
         await chunk_service.delete_chunk_by_document_id(
             document_id=document_id,
             user_id=user.user_id,
@@ -207,7 +204,7 @@ async def delete_document(
         logger.info(f"[Document] {user.user_id}: {document_id} 문서 삭제 완료")
         return DocumentMapper.to_document_delete_response(delete_result)
     except HTTPException as e:
-        logger.error(f"[Document] {user.user_id}: 문서 삭제 실패, detail: {str(e)}")
+        logger.error(f"[Document] {user.user_id}: 문서 삭제 실패, detail: {e.detail}")
         raise
     except Exception as e:
         logger.exception(

@@ -41,7 +41,9 @@ class DocumentRepository(IDocumentRepository):
 
         return DocumentSchema.model_validate(raw)
 
-    async def get_document_list(self, app_id: ObjectId) -> List[DocumentSchema]:
+    async def get_document_by_app(
+        self, app_id: ObjectId
+    ) -> Optional[List[DocumentSchema]]:
         raw = await self.collection.find({"app_id": app_id}).to_list(length=None)
 
         if not raw:
